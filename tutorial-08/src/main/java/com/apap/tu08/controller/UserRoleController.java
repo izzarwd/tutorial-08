@@ -28,9 +28,15 @@ public class UserRoleController {
     private UserRoleDb userRoleDb;
 	
 	 @RequestMapping(value = "/addUser", method = RequestMethod.POST)
-	    private String addUserSubmit(@ModelAttribute UserRoleModel user) {
-		 userService.addUser(user);
-		 return "home";
+	    private String addUserSubmit(@ModelAttribute UserRoleModel user, Model model) {
+		 if(((user.getPassword().length())>8)&&(user.getPassword().matches(".*[a-zA-Z].*"))&&(user.getPassword().matches(".*[0-9].*"))) {
+			 userService.addUser(user);
+			 model.addAttribute("success", "Penambahan user berhasil!");
+			 return "home";
+		 }else {
+			 model.addAttribute("error", "Password belum memenuhi ketentuan!");
+	         return "home";
+		 }
 	 }
 	 
 	 @RequestMapping(value = "/changePassword", method = RequestMethod.POST)
@@ -42,7 +48,7 @@ public class UserRoleController {
 	        Boolean pencocokan1 = bcpe.matches(password.getPasswordLama(), userSekarang.getPassword());
 	        Boolean pencocokan2 = password.getPasswordBaru().equals(password.getKonfirmasiPassword());
 	        
-	        if (pencocokan1 && pencocokan2) {
+	        if(pencocokan1 && pencocokan2) {
 	        	UserRoleModel user = new UserRoleModel();
 	        	
 	            user.setId(userSekarang.getId());
@@ -56,10 +62,10 @@ public class UserRoleController {
 	        }else {
 	        	List <String> pesan = new ArrayList<String>();
 	            
-	        	if (!pencocokan1) {
-	        		pesan.add("Passwrod Salah");
+	        	if(!pencocokan1) {
+	        		pesan.add("Password Salah");
 	            }
-	            if (!pencocokan2) {
+	            if(!pencocokan2) {
 	            	pesan.add("Password Tidak Cocok");
 	            }
 	            model.addAttribute("error", pesan);

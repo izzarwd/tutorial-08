@@ -17,6 +17,13 @@
 			<div class="col-md-6">
 				<div class="card">
 					<div class="card-header">Tambah User Baru</div>
+					<div th:if="${error}">
+                        <p style="color: red">Error: </p>
+                        <p th:each="error: ${error}" style="color: red" th:text="${error}"></p>
+                    </div>
+                    <div th:if="${success}">
+                        <p style="color: green" th:text="${success}"></p>
+                    </div>
 					<div class="card-body">
                         <form th:action="@{/user/addUser}" method="post">
 							<div class="row form-group">
